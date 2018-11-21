@@ -19,6 +19,7 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('snippets/', include('app.urls')),
+    path('', include('app.urls')),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('', RedirectView.as_view(url='snippets/', permanent=False), name='index'),
 ]
