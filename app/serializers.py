@@ -3,20 +3,21 @@ from app.models import Snippet
 from django.contrib.auth.models import User
 
 
-class UserSerializer(serializers.ModelSerializer):
-    snippets = serializers.PrimaryKeyRelatedField(many=True, queryset=Snippet.objects.all())
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    snippets = serializers.HyperlinkedRelatedField(many=True, view_name='snippet-detail', queryset=Snippet.objects.all())
 
     class Meta:
         model = User
         fields = ('id', 'username', 'snippets')
 
 
-class SnippetSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
+class SnippetSerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.CharField(source='owner.username')
+    highlight = serializers.HyperlinkedIdentityField(view_name='snippet-highlight')
 
     class Meta:
         model = Snippet
-        fields = ('id', 'title', 'code', 'linenos', 'language', 'style', 'owner')
+        fields = ('id', 'title', 'code', 'linenos', 'language', 'style', 'owner', 'highlight')
 
     def create(self, validated_data):
         """
